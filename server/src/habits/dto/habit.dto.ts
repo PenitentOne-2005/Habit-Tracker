@@ -3,11 +3,11 @@ import { IsString, IsOptional, MaxLength } from 'class-validator';
 export class CreateHabitDto {
   @IsString()
   @MaxLength(100)
-  title: string;
+  title!: string;
 
   @IsString()
   @IsOptional()
-  description?: string;
+  description!: string;
 }
 
 export class UpdateHabitDto {

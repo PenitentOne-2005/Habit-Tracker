@@ -10,29 +10,29 @@ import { User } from '../users';
 @Entity({ name: 'habits' })
 export class Habit {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @Column({ type: 'varchar' })
-  title: string;
+  title!: string;
 
   @Column({ type: 'text', nullable: true })
-  description: string;
+  description!: string;
 
   @Column({ default: 0 })
-  streak: number;
+  streak!: number;
 
   @Column({ type: 'date', nullable: true })
-  lastCompletedAt: Date | null;
+  lastCompletedAt!: Date | null;
 
   @Column({ default: true })
-  isActive: boolean;
+  isActive!: boolean;
 
   @ManyToOne(() => User, { onDelete: 'CASCADE' })
-  user: User;
+  user!: User;
 
   @Column()
-  userId: number;
+  userId!: number;
 
   @CreateDateColumn({ type: 'timestamp with time zone' })
-  createdAt: Date;
+  createdAt!: Date;
 }
