@@ -29,6 +29,11 @@ export class HabitsController {
     return this.habitsService.findAll(req.user.id);
   }
 
+  @Get('completions')
+  getCompletions(@Req() req: AuthRequest) {
+    return this.habitsService.getCompletions(req.user.id);
+  }
+
   @Patch(':id')
   update(
     @Req() req: AuthRequest,

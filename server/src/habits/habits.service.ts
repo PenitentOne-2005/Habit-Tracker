@@ -7,6 +7,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Habit } from './habit.entity';
+import { HabitCompletion } from './habit-completion.entity';
 import { CreateHabitDto, UpdateHabitDto } from './dto';
 
 @Injectable()
@@ -14,6 +15,8 @@ export class HabitsService {
   constructor(
     @InjectRepository(Habit)
     private readonly habitRepo: Repository<Habit>,
+    @InjectRepository(HabitCompletion)
+    private readonly completionRepo: Repository<HabitCompletion>,
   ) {}
 
   async create(userId: number, dto: CreateHabitDto): Promise<Habit> {
@@ -68,7 +71,31 @@ export class HabitsService {
     }
 
     habit.lastCompletedAt = today;
-    return this.habitRepo.save(habit);
+    await this.habitRepo.save(habit);
+
+    const completion = this.completionRepo.create({ habitId: id });
+    await this.completionRepo.save(completion);
+
+    return habit;
+  }
+
+  async getCompletions(
+    userId: number,
+  ): Promise<{ date: string; count: number }[]> {
+    const completions = await this.completionRepo
+      .createQueryBuilder('c')
+      .innerJoin('c.habit', 'h')
+      .where('h.userId = :userId', { userId })
+      .select('CAST(c.completedAt AS DATE)', 'date')
+      .addSelect('COUNT(*)', 'count')
+      .groupBy('CAST(c.completedAt AS DATE)')
+      .orderBy('date', 'ASC')
+      .getRawMany();
+
+    return completions.map((c) => ({
+      date: c.date,
+      count: Number(c.count),
+    }));
   }
 
   private async findOneOrFail(id: number, userId: number): Promise<Habit> {
