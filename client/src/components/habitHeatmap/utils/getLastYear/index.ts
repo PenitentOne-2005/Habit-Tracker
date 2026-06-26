@@ -1,0 +1,1 @@
+export { getLastYear } from "./getLastYear";
