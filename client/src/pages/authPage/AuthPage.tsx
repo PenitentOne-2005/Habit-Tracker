@@ -91,7 +91,7 @@ const AuthPage = () => {
           </button>
         </form>
 
-        <p className={styles.toggle}>
+        <div className={styles.toggle}>
           {isLogin ? "Нет аккаунта?" : "Уже есть аккаунт?"}{" "}
           <button
             className={styles.toggleButton}
@@ -100,7 +100,7 @@ const AuthPage = () => {
           >
             {isLogin ? "Зарегистрироваться" : "Войти"}
           </button>
-        </p>
+        </div>
       </div>
     </main>
   );
