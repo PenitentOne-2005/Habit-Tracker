@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { memo, useMemo } from "react";
 import {
   Chart,
   Tooltip,
@@ -76,4 +76,4 @@ const HabitHeatmap = ({ completions }: HabitHeatmapProps) => {
   );
 };
 
-export default HabitHeatmap;
+export default memo(HabitHeatmap);
