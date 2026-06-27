@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import type { HabitFormData } from "./interface";
 import { useAuth } from "@/context";
-import { HabitHeatmap, Input } from "@/components";
+import { HabitHeatmap, Input, Spinner } from "@/components";
 import { isCompletedToday } from "./utils";
 import {
   useHabits,
@@ -36,11 +36,7 @@ const HabitsPage = () => {
   };
 
   if (isLoading)
-    return (
-      <div role="status" aria-label="Загрузка">
-        Загрузка...
-      </div>
-    );
+    return <Spinner />;
 
   return (
     <main className={styles.page}>

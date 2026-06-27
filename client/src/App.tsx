@@ -1,6 +1,7 @@
 import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useAuth } from "./context";
+import { Spinner } from "./components";
 
 const AuthPage = lazy(() => import("./pages/authPage"));
 const HabitsPage = lazy(() => import("./pages/habitsPage"));
@@ -10,7 +11,7 @@ const App = () => {
 
   return (
     <BrowserRouter>
-      <Suspense fallback={<div>Загрузка...</div>}>
+      <Suspense fallback={<Spinner />}>
         <Routes>
           <Route
             path="/auth"
