@@ -43,7 +43,7 @@ const HabitsPage = () => {
     );
 
   return (
-    <div className={styles.page}>
+    <main className={styles.page}>
       <header className={styles.header}>
         <h1 className={styles.title}>Мои привычки</h1>
         <button type="button" onClick={logout} className={styles.logoutBtn}>
@@ -133,7 +133,7 @@ const HabitsPage = () => {
           {completions && <HabitHeatmap completions={completions} />}
         </div>
       </div>
-    </div>
+    </main>
   );
 };
 
