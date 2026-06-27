@@ -1,22 +1,27 @@
+import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useAuth } from "./context";
-import { AuthPage, HabitsPage } from "./pages";
+
+const AuthPage = lazy(() => import("./pages/authPage"));
+const HabitsPage = lazy(() => import("./pages/habitsPage"));
 
 const App = () => {
   const { token } = useAuth();
 
   return (
     <BrowserRouter>
-      <Routes>
-        <Route
-          path="/auth"
-          element={!token ? <AuthPage /> : <Navigate to="/" />}
-        />
-        <Route
-          path="/"
-          element={token ? <HabitsPage /> : <Navigate to="/auth" />}
-        />
-      </Routes>
+      <Suspense fallback={<div>Загрузка...</div>}>
+        <Routes>
+          <Route
+            path="/auth"
+            element={!token ? <AuthPage /> : <Navigate to="/" />}
+          />
+          <Route
+            path="/"
+            element={token ? <HabitsPage /> : <Navigate to="/auth" />}
+          />
+        </Routes>
+      </Suspense>
     </BrowserRouter>
   );
 };

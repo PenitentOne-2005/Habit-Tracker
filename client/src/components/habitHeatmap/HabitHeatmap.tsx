@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import {
   Chart,
   Tooltip,
@@ -8,6 +9,7 @@ import {
 import { MatrixController, MatrixElement } from "chartjs-chart-matrix";
 import { Chart as ReactChart } from "react-chartjs-2";
 import type { HabitHeatmapProps } from "./interface";
+import { DAY_MAP, options } from "./constants";
 import { getLastYear } from "./utils";
 import "chartjs-adapter-date-fns";
 
@@ -21,30 +23,25 @@ Chart.register(
 );
 
 const HabitHeatmap = ({ completions }: HabitHeatmapProps) => {
-  const completionMap = Object.fromEntries(
-    completions.map((c) => [c.date, c.count]),
+  const completionMap = useMemo(
+    () => Object.fromEntries(completions.map((c) => [c.date, c.count])),
+    [completions],
   );
 
   const days = getLastYear();
 
-  const DAY_MAP: Record<number, string> = {
-    1: "Пн",
-    2: "Вт",
-    3: "Ср",
-    4: "Чт",
-    5: "Пт",
-    6: "Сб",
-    0: "Вс",
-  };
-
-  const data = days.map((date) => {
-    const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
-    return {
-      x: date.getTime(),
-      y: DAY_MAP[date.getDay()],
-      v: completionMap[key] ?? 0,
-    };
-  });
+  const data = useMemo(
+    () =>
+      days.map((date) => {
+        const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+        return {
+          x: date.getTime(),
+          y: DAY_MAP[date.getDay()],
+          v: completionMap[key] ?? 0,
+        };
+      }),
+    [completionMap],
+  );
 
   const chartData = {
     datasets: [
@@ -68,43 +65,12 @@ const HabitHeatmap = ({ completions }: HabitHeatmapProps) => {
     ],
   };
 
-  const options: any = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      tooltip: {
-        callbacks: {
-          title: (items: any) => {
-            const ts = items[0]?.raw?.x;
-            if (!ts) return "";
-            const d = new Date(ts);
-            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-          },
-          label: (item: any) => `Выполнено: ${item.raw.v}`,
-        },
-      },
-      legend: { display: false },
-    },
-    scales: {
-      x: {
-        type: "time",
-        time: { unit: "month" },
-        ticks: { color: "#555", font: { size: 11 } },
-        grid: { display: false },
-        border: { display: false },
-      },
-      y: {
-        type: "category",
-        labels: ["Вс", "Сб", "Пт", "Чт", "Ср", "Вт", "Пн"],
-        ticks: { color: "#555", font: { size: 11 } },
-        grid: { display: false },
-        border: { display: false },
-      },
-    },
-  };
-
   return (
-    <div style={{ height: "170px" }}>
+    <div
+      style={{ height: "170px" }}
+      role="img"
+      aria-label="График активности за последний год"
+    >
       <ReactChart type="matrix" data={chartData} options={options} />
     </div>
   );

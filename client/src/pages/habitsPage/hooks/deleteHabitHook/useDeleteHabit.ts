@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deleteHabit } from "../../../../api";
+import { deleteHabit } from "@/api";
 
 const useDeleteHabit = () => {
   const queryClient = useQueryClient();

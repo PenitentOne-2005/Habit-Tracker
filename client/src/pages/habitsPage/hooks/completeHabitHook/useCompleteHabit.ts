@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { completeHabit } from "../../../../api";
+import { completeHabit } from "@/api";
 
 const useCompleteHabit = () => {
   const queryClient = useQueryClient();

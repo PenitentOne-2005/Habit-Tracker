@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getHabits } from "../../../../api";
+import { getHabits } from "@/api";
 
 const useHabits = () =>
   useQuery({

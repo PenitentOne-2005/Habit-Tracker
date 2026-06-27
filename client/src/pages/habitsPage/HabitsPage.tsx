@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import type { HabitFormData } from "./interface";
-import { useAuth } from "../../context";
+import { useAuth } from "@/context";
+import { HabitHeatmap, Input } from "@/components";
 import { isCompletedToday } from "./utils";
 import {
   useHabits,
@@ -9,7 +10,6 @@ import {
   useCompleteHabit,
   useDeleteHabit,
 } from "./hooks";
-import { HabitHeatmap } from "../../components";
 import styles from "./HabitsPage.module.css";
 
 const HabitsPage = () => {
@@ -17,6 +17,7 @@ const HabitsPage = () => {
 
   const { data: habits, isLoading } = useHabits();
   const { data: completions } = useCompletions();
+
   const createHabit = useCreateHabit();
   const completeHabit = useCompleteHabit();
   const deleteHabit = useDeleteHabit();
@@ -34,7 +35,12 @@ const HabitsPage = () => {
     });
   };
 
-  if (isLoading) return <div>Загрузка...</div>;
+  if (isLoading)
+    return (
+      <div role="status" aria-label="Загрузка">
+        Загрузка...
+      </div>
+    );
 
   return (
     <div className={styles.page}>
@@ -45,19 +51,23 @@ const HabitsPage = () => {
         </button>
       </header>
 
-      <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
+      <form
+        className={styles.form}
+        onSubmit={handleSubmit(onSubmit)}
+        aria-label="Добавить привычку"
+      >
         <div>
-          <input
-            className={styles.input}
-            placeholder="Название привычки"
+          <Input
+            placeholder="Имя"
+            aria-label="Имя"
+            error={errors.title?.message}
             {...register("title", { required: "Обязательное поле" })}
           />
-          {errors.title && <span>{errors.title.message}</span>}
         </div>
 
         <div>
-          <input
-            className={styles.input}
+          <Input
+            aria-label="Описание"
             placeholder="Описание (необязательно)"
             {...register("description")}
           />
@@ -72,14 +82,16 @@ const HabitsPage = () => {
         </button>
       </form>
 
-      <div className={styles.list}>
-        {habits?.length === 0 && <p>Нет привычек. Добавь первую!</p>}
+      <ul className={styles.list}>
+        {habits?.length === 0 && (
+          <li className={styles.empty}>Нет привычек. Добавь первую!</li>
+        )}
 
         {habits?.map((habit) => {
           const done = isCompletedToday(habit.lastCompletedAt);
 
           return (
-            <div key={habit.id} className={styles.card}>
+            <li key={habit.id} className={styles.card}>
               <div className={styles.cardInfo}>
                 <span className={styles.habitTitle}>{habit.title}</span>
 
@@ -97,6 +109,7 @@ const HabitsPage = () => {
                   onClick={() => completeHabit.mutate(habit.id)}
                   disabled={done || completeHabit.isPending}
                   className={styles.completeBtn}
+                  aria-label={`Отметить привычку ${habit.title} как выполненную`}
                 >
                   {done ? "✓ Выполнено" : "Отметить"}
                 </button>
@@ -104,14 +117,15 @@ const HabitsPage = () => {
                   type="button"
                   onClick={() => deleteHabit.mutate(habit.id)}
                   className={styles.deleteBtn}
+                  aria-label={`Удалить привычку ${habit.title}`}
                 >
                   Удалить
                 </button>
               </div>
-            </div>
+            </li>
           );
         })}
-      </div>
+      </ul>
 
       <div className={styles.heatmapSection}>
         <h2 className={styles.sectionTitle}>Активность</h2>

@@ -2,12 +2,14 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import type { AuthFormData } from "./interface";
-import { useAuth } from "../../context";
-import { login, register as registerApi } from "../../api";
+import { useAuth } from "@/context";
+import { login, register as registerApi } from "@/api";
+import { Input } from "@/components";
 import styles from "./AuthPage.module.css";
 
 const AuthPage = () => {
   const [isLogin, setIsLogin] = useState(true);
+
   const { login: setAuth } = useAuth();
   const navigate = useNavigate();
 
@@ -43,38 +45,43 @@ const AuthPage = () => {
     <div className={styles.wrapper}>
       <div className={styles.card}>
         <h1 className={styles.title}>{isLogin ? "Войти" : "Регистрация"}</h1>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          aria-label={isLogin ? "Форма входа" : "Форма регистрации"}
+        >
           <div className={styles.field}>
-            <input
-              className={styles.input}
+            <Input
               placeholder="Имя"
+              aria-label="Имя"
+              error={errors.name?.message}
               {...register("name", { required: "Обязательное поле" })}
             />
-            {errors.name && (
-              <span className={styles.error}>{errors.name.message}</span>
-            )}
           </div>
 
           <div className={styles.field}>
-            <input
-              className={styles.input}
+            <Input
               type="password"
               placeholder="Пароль"
-              {...register("password", { required: "Обязательное поле" })}
+              aria-label="Пароль"
+              error={errors.password?.message}
+              {...register("password", {
+                required: "Обязательное поле",
+                minLength: { value: 8, message: "Минимум 8 символов" },
+              })}
             />
-            {errors.password && (
-              <span className={styles.error}>{errors.password.message}</span>
-            )}
           </div>
 
           {errors.root && (
-            <span className={styles.rootError}>{errors.root.message}</span>
+            <span className={styles.rootError} role="alert" aria-live="polite">
+              {errors.root.message}
+            </span>
           )}
 
           <button
             className={styles.button}
             type="submit"
             disabled={isSubmitting}
+            aria-busy={isSubmitting}
           >
             {isSubmitting
               ? "Загрузка..."
