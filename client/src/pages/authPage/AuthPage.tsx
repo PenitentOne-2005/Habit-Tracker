@@ -42,7 +42,7 @@ const AuthPage = () => {
   };
 
   return (
-    <div className={styles.wrapper}>
+    <main className={styles.wrapper}>
       <div className={styles.card}>
         <h1 className={styles.title}>{isLogin ? "Войти" : "Регистрация"}</h1>
         <form
