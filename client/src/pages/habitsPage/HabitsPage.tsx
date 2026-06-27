@@ -1,15 +1,9 @@
 import { useForm } from "react-hook-form";
 import type { HabitFormData } from "./interface";
 import { useAuth } from "@/context";
-import { HabitHeatmap, Input, Spinner } from "@/components";
-import { isCompletedToday } from "./utils";
-import {
-  useHabits,
-  useCompletions,
-  useCreateHabit,
-  useCompleteHabit,
-  useDeleteHabit,
-} from "./hooks";
+import { useHabits, useCompletions, useCreateHabit } from "./hooks";
+import { Input, Spinner } from "@/components";
+import { HabitHeatmap, HabitList } from "./components";
 import styles from "./HabitsPage.module.css";
 
 const HabitsPage = () => {
@@ -19,8 +13,6 @@ const HabitsPage = () => {
   const { data: completions } = useCompletions();
 
   const createHabit = useCreateHabit();
-  const completeHabit = useCompleteHabit();
-  const deleteHabit = useDeleteHabit();
 
   const {
     register,
@@ -78,50 +70,7 @@ const HabitsPage = () => {
         </button>
       </form>
 
-      <ul className={styles.list}>
-        {habits?.length === 0 && (
-          <li className={styles.empty}>Нет привычек. Добавь первую!</li>
-        )}
-
-        {habits?.map((habit) => {
-          const done = isCompletedToday(habit.lastCompletedAt);
-
-          return (
-            <li key={habit.id} className={styles.card}>
-              <div className={styles.cardInfo}>
-                <span className={styles.habitTitle}>{habit.title}</span>
-
-                {habit.description && (
-                  <span className={styles.habitDescription}>
-                    {habit.description}
-                  </span>
-                )}
-                <span className={styles.streak}>🔥 {habit.streak} дней</span>
-              </div>
-
-              <div className={styles.cardActions}>
-                <button
-                  type="button"
-                  onClick={() => completeHabit.mutate(habit.id)}
-                  disabled={done || completeHabit.isPending}
-                  className={styles.completeBtn}
-                  aria-label={`Отметить привычку ${habit.title} как выполненную`}
-                >
-                  {done ? "✓ Выполнено" : "Отметить"}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => deleteHabit.mutate(habit.id)}
-                  className={styles.deleteBtn}
-                  aria-label={`Удалить привычку ${habit.title}`}
-                >
-                  Удалить
-                </button>
-              </div>
-            </li>
-          );
-        })}
-      </ul>
+      <HabitList habits={habits} />
 
       <div className={styles.heatmapSection}>
         <h2 className={styles.sectionTitle}>Активность</h2>
