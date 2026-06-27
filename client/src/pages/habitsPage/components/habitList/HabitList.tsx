@@ -13,7 +13,7 @@ const HabitList = ({ habits }: HabitListProps) => {
       {habits?.map((habit) => {
         const done = isCompletedToday(habit.lastCompletedAt);
 
-        return <HabitItem habit={habit} done={done} />;
+        return <HabitItem habit={habit} done={done} key={habit.id} />;
       })}
     </ul>
   );

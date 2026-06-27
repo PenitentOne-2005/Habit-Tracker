@@ -1,3 +1,4 @@
+import { memo } from "react";
 import type { HabitItemProps } from "./interface";
 import { useCompleteHabit, useDeleteHabit } from "@/pages/habitsPage/hooks";
 import styles from "./HabitItem.module.css";
@@ -40,4 +41,4 @@ const HabitItem = ({ habit, done }: HabitItemProps) => {
   );
 };
 
-export default HabitItem;
+export default memo(HabitItem);
