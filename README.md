@@ -16,7 +16,7 @@
 ### 1. Клонируй репозиторий
 ```bash
 git clone https://github.com/PenitentOne-2005/Habit-Tracker.git
-cd habit-tracker
+cd Habit-Tracker
 ```
 
 ### 2. Подними базу данных
