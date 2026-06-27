@@ -1,10 +1,4 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  CreateDateColumn,
-  ManyToOne,
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { Habit } from './habit.entity';
 
 @Entity({ name: 'habit_completions' })
@@ -18,6 +12,6 @@ export class HabitCompletion {
   @Column()
   habitId!: number;
 
-  @CreateDateColumn({ type: 'date' })
+  @Column({ type: 'date' })
   completedAt!: Date;
 }

@@ -50,8 +50,9 @@ export class HabitsService {
   async complete(userId: number, id: number): Promise<Habit> {
     const habit = await this.findOneOrFail(id, userId);
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const now = new Date();
+    const localDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    const today = new Date(localDate);
 
     if (habit.lastCompletedAt) {
       const last = new Date(habit.lastCompletedAt);
@@ -73,7 +74,10 @@ export class HabitsService {
     habit.lastCompletedAt = today;
     await this.habitRepo.save(habit);
 
-    const completion = this.completionRepo.create({ habitId: id });
+    const completion = this.completionRepo.create({
+      habitId: id,
+      completedAt: localDate,
+    });
     await this.completionRepo.save(completion);
 
     return habit;
@@ -86,9 +90,9 @@ export class HabitsService {
       .createQueryBuilder('c')
       .innerJoin('c.habit', 'h')
       .where('h.userId = :userId', { userId })
-      .select('CAST(c.completedAt AS DATE)', 'date')
+      .select("TO_CHAR(c.completedAt, 'YYYY-MM-DD')", 'date')
       .addSelect('COUNT(*)', 'count')
-      .groupBy('CAST(c.completedAt AS DATE)')
+      .groupBy("TO_CHAR(c.completedAt, 'YYYY-MM-DD')")
       .orderBy('date', 'ASC')
       .getRawMany();
 
