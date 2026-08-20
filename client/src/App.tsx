@@ -1,7 +1,7 @@
 import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { useAuth } from "./context";
-import { Spinner } from "./components";
+import { useAuth } from "./shared/hooks";
+import { Spinner } from "./shared/components";
 
 const AuthPage = lazy(() => import("./pages/authPage"));
 const HabitsPage = lazy(() => import("./pages/habitsPage"));
