@@ -22,7 +22,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   .spinner {
-    animation: none;
-    border-top-color: #ffffff;
+    animation-duration: 2.5s;
   }
 }

@@ -1,15 +1,25 @@
+import { useId } from "react";
 import type { InputProps } from "./interface";
 import styles from "./Input.module.css";
 
-const Input = ({ error, ...props }: InputProps) => {
-  const errorId = "input-error";
+const Input = ({ error, label, id: externalId, ref, ...props }: InputProps) => {
+  const generatedId = useId();
+  const inputId = externalId || generatedId;
+  const errorId = `${inputId}-error`;
 
   return (
-    <>
+    <div className={styles.inputWrapper}>
+      {label && (
+        <label htmlFor={inputId} className={styles.label}>
+          {label}
+        </label>
+      )}
       <input
+        ref={ref}
+        id={inputId}
         className={styles.input}
+        aria-invalid={Boolean(error)}
         aria-describedby={error ? errorId : undefined}
-        aria-invalid={!!error}
         {...props}
       />
       {error && (
@@ -17,7 +27,7 @@ const Input = ({ error, ...props }: InputProps) => {
           {error}
         </span>
       )}
-    </>
+    </div>
   );
 };
 

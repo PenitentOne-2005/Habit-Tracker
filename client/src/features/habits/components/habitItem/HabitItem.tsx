@@ -8,31 +8,42 @@ const HabitItem = ({ habit, done }: HabitItemProps) => {
   const deleteHabit = useDeleteHabit();
 
   return (
-    <li key={habit.id} className={styles.card}>
-      <div className={styles.cardInfo}>
-        <span className={styles.habitTitle}>{habit.title}</span>
+    <li className={styles.card}>
+      <article className={styles.cardInfo}>
+        <h3 className={styles.habitTitle}>{habit.title}</h3>
 
         {habit.description && (
-          <span className={styles.habitDescription}>{habit.description}</span>
+          <p className={styles.habitDescription}>{habit.description}</p>
         )}
-        <span className={styles.streak}>🔥 {habit.streak} дней</span>
-      </div>
+
+        <p className={styles.streak}>
+          <span aria-hidden="true">🔥 </span>
+          <span>{habit.streak} дней подряд</span>
+        </p>
+      </article>
 
       <div className={styles.cardActions}>
         <button
           type="button"
           onClick={() => completeHabit.mutate(habit.id)}
           disabled={done || completeHabit.isPending}
+          aria-pressed={done}
+          aria-busy={completeHabit.isPending}
           className={styles.completeBtn}
-          aria-label={`Отметить привычку ${habit.title} как выполненную`}
+          aria-label={
+            done
+              ? `Привычка "${habit.title}" выполнена`
+              : `Отметить привычку "${habit.title}" как выполненную`
+          }
         >
           {done ? "✓ Выполнено" : "Отметить"}
         </button>
+
         <button
           type="button"
           onClick={() => deleteHabit.mutate(habit.id)}
           className={styles.deleteBtn}
-          aria-label={`Удалить привычку ${habit.title}`}
+          aria-label={`Удалить привычку "${habit.title}"`}
         >
           Удалить
         </button>

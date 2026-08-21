@@ -1,7 +1,7 @@
-import { useAuth } from "@/shared/context";
 import { useForm } from "react-hook-form";
 import type { HabitFormData } from "./interface";
 import { useCompletions, useCreateHabit, useHabits } from "./hooks";
+import { useAuth } from "@/shared/hooks";
 import { Input, Spinner } from "@/shared/components";
 import { HabitHeatmap, HabitList } from "./components";
 import styles from "./Habits.module.css";
@@ -27,13 +27,20 @@ const Habits = () => {
     });
   };
 
-  if (isLoading) return <Spinner />;
+  if (isLoading) return <Spinner label="Загрузка привычек..." />;
 
   return (
     <>
       <header className={styles.header}>
-        <h1 className={styles.title}>Мои привычки</h1>
-        <button type="button" onClick={logout} className={styles.logoutBtn}>
+        <h1 className={styles.title} id="habits-title">
+          Мои привычки
+        </h1>
+        <button
+          type="button"
+          onClick={logout}
+          className={styles.logoutBtn}
+          aria-label="Выйти из аккаунта"
+        >
           Выйти
         </button>
       </header>
@@ -42,11 +49,12 @@ const Habits = () => {
         className={styles.form}
         onSubmit={handleSubmit(onSubmit)}
         aria-label="Добавить привычку"
+        noValidate
       >
         <div>
           <Input
-            placeholder="Имя"
-            aria-label="Имя"
+            label="Название"
+            placeholder="Название привычки"
             error={errors.title?.message}
             {...register("title", { required: "Обязательное поле" })}
           />
@@ -54,7 +62,7 @@ const Habits = () => {
 
         <div>
           <Input
-            aria-label="Описание"
+            label="Описание"
             placeholder="Описание (необязательно)"
             {...register("description")}
           />
@@ -63,6 +71,7 @@ const Habits = () => {
         <button
           type="submit"
           disabled={createHabit.isPending}
+          aria-busy={createHabit.isPending}
           className={styles.addBtn}
         >
           {createHabit.isPending ? "Создание..." : "Добавить"}
@@ -73,7 +82,11 @@ const Habits = () => {
 
       <div className={styles.heatmapSection}>
         <h2 className={styles.sectionTitle}>Активность</h2>
-        <div className={styles.heatmapWrapper}>
+
+        <div
+          className={styles.heatmapWrapper}
+          aria-label="Тепловая карта активности по дням"
+        >
           {completions && <HabitHeatmap completions={completions} />}
         </div>
       </div>

@@ -30,6 +30,11 @@ const HabitHeatmap = ({ completions }: HabitHeatmapProps) => {
 
   const days = getLastYear();
 
+  const totalCompletions = useMemo(
+    () => completions.reduce((acc, c) => acc + c.count, 0),
+    [completions],
+  );
+
   const data = useMemo(
     () =>
       days.map((date) => {
@@ -40,7 +45,7 @@ const HabitHeatmap = ({ completions }: HabitHeatmapProps) => {
           v: completionMap[key] ?? 0,
         };
       }),
-    [completionMap],
+    [days, completionMap],
   );
 
   const chartData = {
@@ -66,14 +71,47 @@ const HabitHeatmap = ({ completions }: HabitHeatmapProps) => {
   };
 
   return (
-    <div
-      style={{ height: "170px" }}
-      role="img"
-      aria-label="График активности за последний год"
-    >
-      <ReactChart type="matrix" data={chartData} options={options} />
-    </div>
+    <figure role="group" aria-label="График активности за последний год">
+      <figcaption className="sr-only">
+        График активности за последний год. Всего выполнено привычек:{" "}
+        {totalCompletions}.
+      </figcaption>
+
+      <div style={{ height: "170px" }} aria-hidden="true">
+        <ReactChart type="matrix" data={chartData} options={options} />
+      </div>
+
+      <div className="sr-only">
+        <table>
+          <caption>История активности по дням</caption>
+          <thead>
+            <tr>
+              <th scope="col">Дата</th>
+              <th scope="col">Количество</th>
+            </tr>
+          </thead>
+          <tbody>
+            {days.map((date) => {
+              const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+              const count = completionMap[key] ?? 0;
+              const formattedDate = date.toLocaleDateString("ru-RU", {
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+              });
+
+              return (
+                <tr key={key}>
+                  <td>{formattedDate}</td>
+                  <td>{count > 0 ? `${count} выполнено` : "Нет активности"}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </figure>
   );
-};
+}
 
 export default memo(HabitHeatmap);

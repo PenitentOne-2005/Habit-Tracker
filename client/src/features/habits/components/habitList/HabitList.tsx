@@ -5,17 +5,18 @@ import styles from "./HabitList.module.css";
 
 const HabitList = ({ habits }: HabitListProps) => {
   return (
-    <ul className={styles.list}>
-      {habits?.length === 0 && (
-        <li className={styles.empty}>Нет привычек. Добавь первую!</li>
-      )}
+    <div aria-live="polite">
+      <ul className={styles.list} aria-labelledby="habits-title">
+        {habits?.length === 0 && (
+          <li className={styles.empty}>Нет привычек. Добавь первую!</li>
+        )}
+        {habits?.map((habit) => {
+          const done = isCompletedToday(habit.lastCompletedAt);
 
-      {habits?.map((habit) => {
-        const done = isCompletedToday(habit.lastCompletedAt);
-
-        return <HabitItem habit={habit} done={done} key={habit.id} />;
-      })}
-    </ul>
+          return <HabitItem habit={habit} done={done} key={habit.id} />;
+        })}
+      </ul>
+    </div>
   );
 };
 

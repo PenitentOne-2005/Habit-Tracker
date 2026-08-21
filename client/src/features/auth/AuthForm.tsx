@@ -43,15 +43,21 @@ const AuthForm = () => {
 
   return (
     <div className={styles.card}>
-      <h1 className={styles.title}>{isLogin ? "Войти" : "Регистрация"}</h1>
+      <h1 className={styles.title} aria-live="polite" id="auth-title">
+        {isLogin ? "Войти" : "Регистрация"}
+      </h1>
       <form
         onSubmit={handleSubmit(onSubmit)}
         aria-label={isLogin ? "Форма входа" : "Форма регистрации"}
+        aria-describedby={errors.root ? "root-error" : undefined}
+        noValidate
       >
         <div className={styles.field}>
           <Input
+            label="Имя"
             placeholder="Имя"
-            aria-label="Имя"
+            autoComplete="username"
+            disabled={isSubmitting}
             error={errors.name?.message}
             {...register("name", { required: "Обязательное поле" })}
           />
@@ -59,9 +65,11 @@ const AuthForm = () => {
 
         <div className={styles.field}>
           <Input
+            label="Пароль"
             type="password"
             placeholder="Пароль"
-            aria-label="Пароль"
+            autoComplete={isLogin ? "current-password" : "new-password"}
+            disabled={isSubmitting}
             error={errors.password?.message}
             {...register("password", {
               required: "Обязательное поле",
@@ -71,7 +79,12 @@ const AuthForm = () => {
         </div>
 
         {errors.root && (
-          <span className={styles.rootError} role="alert" aria-live="polite">
+          <span
+            id="root-error"
+            className={styles.rootError}
+            role="alert"
+            aria-live="polite"
+          >
             {errors.root.message}
           </span>
         )}
@@ -82,11 +95,13 @@ const AuthForm = () => {
           disabled={isSubmitting}
           aria-busy={isSubmitting}
         >
-          {isSubmitting
-            ? "Загрузка..."
-            : isLogin
-              ? "Войти"
-              : "Зарегистрироваться"}
+          <span aria-live="polite">
+            {isSubmitting
+              ? "Загрузка..."
+              : isLogin
+                ? "Войти"
+                : "Зарегистрироваться"}
+          </span>
         </button>
       </form>
 
@@ -96,6 +111,11 @@ const AuthForm = () => {
           className={styles.toggleButton}
           type="button"
           onClick={toggleMode}
+          aria-label={
+            isLogin
+              ? "Переключиться на форму регистрации"
+              : "Переключиться на форму входа"
+          }
         >
           {isLogin ? "Зарегистрироваться" : "Войти"}
         </button>
